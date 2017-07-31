@@ -14,7 +14,7 @@ def main():
     w = WordPressController()
     wpProductList = w.getAllProducts()
     
-    for currentProduct in p.:
+    #for currentProduct in p:
         
     
 if __name__ == "__main__":

@@ -7,3 +7,4 @@
 *.sublime-project
 *.sublime-workspace
 >>>>>>> Updated config interface to prepare for html, expanded rotation settings and imports.
+qt/build-sync-tool-Desktop*

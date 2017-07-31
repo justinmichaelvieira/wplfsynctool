@@ -1,4 +1,5 @@
 from woocommerce import API
+import json
 
 # Class Definition
 class WordPressController:
@@ -11,9 +12,6 @@ class WordPressController:
             query_string_auth	=True,
             version="wc/v1"
         )
-        self.allProductInfo = self.getAllProducts()
-        for currProductInfo in self.allProductInfo:
-            self.productNameIdDict[currProductInfo.name] = currProductInfo.id
             
     # Defines a AllProductInfoList "property" for use by other classes
     def set_allProductInfo(self, value):
@@ -178,6 +176,9 @@ class WordPressController:
         
     def printAllProducts(self):
         print(self.wcapi.get("products").json())
+
+    def getAllProducts(self):
+        return self.wcapi.get("products")
         
     def getProductIdByName(self):
         pass
