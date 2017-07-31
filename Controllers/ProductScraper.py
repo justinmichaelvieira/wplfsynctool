@@ -9,8 +9,8 @@ import traceback
 
 # Class Definition
 class ProductScraper:
-    def __init__(self):
-        self.url = "https://www.leafly.com/dispensary-info/detroit-grass-station/menu"
+    def __init__(self, config):
+        self.url = config['leafly_url']
         self.debug = True
         self.allProductInfo = [] # This is a list of the following form: [ Name, [List of Weights or Counts], [List of Prices] ] 
         self.productNameDict = {}

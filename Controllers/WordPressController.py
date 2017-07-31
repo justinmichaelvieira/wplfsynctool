@@ -1,13 +1,13 @@
 from woocommerce import API
-import json
+
 
 # Class Definition
 class WordPressController:
-    def __init__(self):
+    def __init__(self, config):
         self.wcapi = API( 
-            url="https://leaflywp.justinvieira.com", 
-            consumer_key="ck_4d455fd97da0ab14398a52470bca15070eb0c0ac", 
-            consumer_secret="cs_07cecb5c54385f86d14a9f80deaaa2ac86f5ca96",
+            url=config['wp_url'],
+            consumer_key=config['consumer_key'],
+            consumer_secret=config['consumer_secret'],
             wp_api=True,
             query_string_auth	=True,
             version="wc/v1"
