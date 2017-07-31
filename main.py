@@ -12,16 +12,13 @@ def main():
     config = yaml.safe_load(stream)
 
     p = ProductScraper(config)
-    p.scrapeProductData()
-    
     w = WordPressController(config)
-    wpProductList = w.getAllProducts()
 
     app = QApplication(sys.argv)
     app.setOrganizationName("Rancorsoft")
     app.setOrganizationDomain("Rancorsoft.com")
     app.setApplicationName("Leafly WPAPI Maps Sync Tool")
-    mainWindow = MainWindow(config)
+    mainWindow = MainWindow(config, p, w)
     mainWindow.show()
     # without this, the script exits immediately.
     sys.exit(app.exec_())

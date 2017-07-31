@@ -4,12 +4,16 @@ from woocommerce import API
 # Class Definition
 class WordPressController:
     def __init__(self, config):
-        self.wcapi = API( 
-            url=config['wp_url'],
-            consumer_key=config['consumer_key'],
-            consumer_secret=config['consumer_secret'],
+        self._config = config
+        self.wcapi = None
+
+    def initWcapi(self):
+        self.wcapi = API(
+            url=self._config['wp_url'],
+            consumer_key=self._config['consumer_key'],
+            consumer_secret=self._config['consumer_secret'],
             wp_api=True,
-            query_string_auth	=True,
+            query_string_auth=True,
             version="wc/v1"
         )
             
