@@ -49,3 +49,6 @@ class MainWindow(QDialog, Ui_MainWindow):
             self._api.initWcapi()
         self._scraper.scrapeProductData()
         self._api.printAllProducts()
+
+    def setCentralWidget(self, nullArg):
+        pass
