@@ -1,5 +1,5 @@
 from woocommerce import API
-
+from pprint import pprint
 
 # Class Definition
 class WordPressController:
@@ -59,7 +59,7 @@ class WordPressController:
             #    }
             #]
         }
-        print(self.wcapi.post("products", data).json())
+        pprint(self.wcapi.post("products", data).json())
         
     def createVariableProduct(self, name, unitList, priceList):
         data = {
@@ -165,7 +165,7 @@ class WordPressController:
                 ]
             }
         ]}
-        print(self.wcapi.post("products", data).json())
+        pprint(self.wcapi.post("products", data).json())
 
     # Read functions
     
@@ -179,7 +179,7 @@ class WordPressController:
         return self.get_allProductInfo()
         
     def printAllProducts(self):
-        print(self.wcapi.get("products").json())
+        pprint(self.wcapi.get("products").json())
 
     def getAllProducts(self):
         return self.wcapi.get("products")
@@ -200,7 +200,7 @@ class WordPressController:
                   "slug": catslug
                 }]
         }
-        print(self.wcapi.put(''.join(["products/", productId], data).json()))
+        pprint(self.wcapi.put(''.join(["products/", productId], data).json()))
     
     # Delete functions
     

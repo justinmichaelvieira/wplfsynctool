@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 import sys
 import requests
 import traceback
+from pprint import pprint
 
 # Class Definition
 class ProductScraper:
@@ -61,7 +62,7 @@ class ProductScraper:
                 self.productNameDict[tempProductName] = tempProductInfo
                 
             if self.debug:
-                print(self.allProductInfo)
+                pprint(self.allProductInfo)
         except:
             for tb in traceback.format_tb(sys.exc_info()[2]):
                 print(tb)
