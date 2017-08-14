@@ -1,5 +1,5 @@
 from woocommerce import API
-from pprint import pprint
+from pprint import pprint, pformat
 
 # Class Definition
 class WordPressController:
@@ -179,7 +179,9 @@ class WordPressController:
         return self.get_allProductInfo()
         
     def printAllProducts(self):
-        pprint(self.wcapi.get("products").json())
+        productsJson = self.wcapi.get("products").json()
+        pprint(productsJson)
+        return pformat(productsJson)
 
     def getAllProducts(self):
         return self.wcapi.get("products")

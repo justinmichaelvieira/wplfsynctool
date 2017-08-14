@@ -11,3 +11,4 @@ qt/build-sync-tool-Desktop*
 /config.yml
 /dist/*
 build/*
+main.exe

@@ -2,6 +2,8 @@ import sys
 import yaml
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtWidgets import *
+import sys
+import os.path as osp
 
 from Controllers.ProductScraper import ProductScraper
 from Controllers.WordPressController import WordPressController
@@ -19,6 +21,7 @@ def main():
     app.setOrganizationDomain("Rancorsoft.com")
     app.setApplicationName("Leafly WPAPI Maps Sync Tool")
     mainWindow = MainWindow(config, p, w)
+    mainWindow.setWindowIcon(QtGui.QIcon(osp.join(osp.dirname(__file__), 'sync16x16.png')))
     mainWindow.show()
     # without this, the script exits immediately.
     sys.exit(app.exec_())

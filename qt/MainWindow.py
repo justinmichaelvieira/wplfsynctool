@@ -1,10 +1,8 @@
 from PyQt5.QtWidgets import *
-#import numpy as np
 from qt.mainwindow_auto import Ui_MainWindow
 import yaml
 
 class MainWindow(QDialog, Ui_MainWindow):
-
     def __init__(self, config, scraper, api):
         super(self.__class__, self).__init__()
         self.setupUi(self)
@@ -12,8 +10,8 @@ class MainWindow(QDialog, Ui_MainWindow):
         self._scraper = scraper
         self._api = api
         self.pushButton.clicked.connect(self.performSync)
-        self.pushButton_2.clicked.connect(self.editContent)
-        self.pushButton_3.clicked.connect(self.saveContent)
+        self.editSettingsBtn.clicked.connect(self.editContent)
+        self.saveSettingsBtn.clicked.connect(self.saveContent)
         self.setUiFromConfig()
         self.setDisabled(True)
 
@@ -37,6 +35,8 @@ class MainWindow(QDialog, Ui_MainWindow):
         self.wpApiUrlEdit.setDisabled(editable)
         self.consKeyEdit.setDisabled(editable)
         self.secretKeyEdit.setDisabled(editable)
+        self.saveSettingsBtn.setDisabled(editable)
+        self.editSettingsBtn.setDisabled(not editable)
 
     def setUiFromConfig(self):
         self.wmPageEdit.setText(self._config['leafly_url'])
@@ -48,7 +48,11 @@ class MainWindow(QDialog, Ui_MainWindow):
         if(self._api.wcapi == None):
             self._api.initWcapi()
         self._scraper.scrapeProductData()
-        self._api.printAllProducts()
+        allProductsJSON = self._api.printAllProducts()
+        self.onOutputChanged(allProductsJSON)
 
     def setCentralWidget(self, nullArg):
         pass
+
+    def onOutputChanged(self, allProductsJSON):
+        self.outputText.appendPlainText(allProductsJSON)
