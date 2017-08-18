@@ -11,24 +11,16 @@ from pprint import pprint
 # Class Definition
 class ProductScraper:
     def __init__(self, config):
-        self.url = config['leafly_url']
-        self.debug = True
-        self.allProductInfo = [] # This is a list of the following form: [ Name, [List of Weights or Counts], [List of Prices] ] 
-        self.productNameDict = {}
-        
-    # Defines a AllProductInfoList "property" for use by other classes
+        self._url = config['leafly_url']
+        self._debug = True
+        self._allProductInfo = {} # self.allProductInfo['name'] = [[List of Weights or Counts], [List of Prices]]
+
+    # Defines allProductInfo property
     def set_allProductInfo(self, value):
-        self.allProductInfo = value
+        self._allProductInfo = value
     def get_allProductInfo(self):
-        return self.allProductInfo
-    AllProductInfoList = property(get_allProductInfo, set_allProductInfo)
-    
-    # Defines a ProductNameDict "property" for use by other classes
-    def set_productNameDict(self, value):
-        self.productNameDict = value
-    def get_productNameDict(self):
-        return self.productNameDict
-    ProductNameDict = property(get_productNameDict, set_productNameDict)
+        return self._allProductInfo
+    AllProductInfo = property(get_allProductInfo, set_allProductInfo)
     
     #Fills local cache / containers with product data
     def processPage(self,  line):
@@ -57,20 +49,20 @@ class ProductScraper:
                         
                 #Store the single product info in the class' various containers 
                 tempProductName = currentProduct.attrs['title']
-                tempProductInfo = [ tempProductName, tempPriceList, tempPriceHeadings]
-                self.allProductInfo.append(tempProductInfo)
-                self.productNameDict[tempProductName] = tempProductInfo
-                
-            if self.debug:
-                pprint(self.allProductInfo)
+                tempProductInfo = [tempPriceList, tempPriceHeadings]
+                self._allProductInfo[tempProductName] = tempProductInfo
+
+            if self._debug:
+                pprint(self._allProductInfo)
         except:
             for tb in traceback.format_tb(sys.exc_info()[2]):
                 print(tb)
 
     def scrapeProductData(self):
-        self.processPage(self.url)
+        self.processPage(self._url)
+        return self._allProductInfo
         
     def productIsInCache(self, productName):
-        if productName in self.productNameDict:
+        if productName in self._allProductInfo:
             return True
         return False

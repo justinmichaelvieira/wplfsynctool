@@ -1,13 +1,21 @@
-import sys
-import yaml
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import *
-import sys
 import os.path as osp
+import sys, logging, yaml
+from PyQt5 import QtGui
+from PyQt5.QtWidgets import *
 
 from Controllers.ProductScraper import ProductScraper
 from Controllers.WordPressController import WordPressController
-from qt.MainWindow import MainWindow
+from View.MainWindow import MainWindow
+
+def exceptionHook(type, value, tb):
+    """ Redirect tracebacks to error log """
+    import traceback
+    rawreport = traceback.format_exception(type, value, tb)
+    report = '\n'.join(rawreport)
+    logging.error(report)
+    sys.exit()
+
+sys.excepthook = exceptionHook
 
 def main():
     stream = open('config.yml', 'r')

@@ -5,10 +5,10 @@ from pprint import pprint, pformat
 class WordPressController:
     def __init__(self, config):
         self._config = config
-        self.wcapi = None
+        self._wcapi = None
 
     def initWcapi(self):
-        self.wcapi = API(
+        self._wcapi = API(
             url=self._config['wp_url'],
             consumer_key=self._config['consumer_key'],
             consumer_secret=self._config['consumer_secret'],
@@ -35,143 +35,41 @@ class WordPressController:
     
     def createSimpleProduct(self, name, price):
         data = {
-            "name": name,
-            "type": "simple",
-            "regular_price": price,
-            "description": name,
-            "short_description": name,
-            #"categories": [
-            #    {
-            #        "id": 9
-            #    },
-            #    {
-            #        "id": 14
-            #    }
-            #],
-            #"images": [
-            #    {
-            #        "src": "http://demo.woothemes.com/woocommerce/wp-content/uploads/sites/56/2013/06/T_2_front.jpg",
-            #        "position": 0
-            #    },
-            #    {
-            #        "src": "http://demo.woothemes.com/woocommerce/wp-content/uploads/sites/56/2013/06/T_2_back.jpg",
-            #        "position": 1
-            #    }
-            #]
+            "name": name, "type": "simple", "regular_price": price, "description": name, "short_description": name,
         }
-        pprint(self.wcapi.post("products", data).json())
+        pprint(self._wcapi.post("products", data).json())
         
-    def createVariableProduct(self, name, unitList, priceList):
+    def createVariableProduct(self, name, prodInfo):
+        variations = []
+        options = []
+
+        for x in range(len(prodInfo[0])):
+            variations.append({"regular_price": prodInfo[0][x], "attributes": [{"name": "Size","option": prodInfo[1][x]}]})
+            options.append(prodInfo[1][x])
+
         data = {
-        "name": name,
-        "type": "variable",
-        "description": name,
-        "short_description": name,
-        "categories": [
-            {
-                "id": 9
-            },
-            {
-                "id": 14
-            }
-        ],
-        "images": [
-            {
-                "src": "http://demo.woothemes.com/woocommerce/wp-content/uploads/sites/56/2013/06/T_4_front.jpg",
-                "position": 0
-            },
-            {
-                "src": "http://demo.woothemes.com/woocommerce/wp-content/uploads/sites/56/2013/06/T_4_back.jpg",
-                "position": 1
-            },
-            {
-                "src": "http://demo.woothemes.com/woocommerce/wp-content/uploads/sites/56/2013/06/T_3_front.jpg",
-                "position": 2
-            },
-            {
-                "src": "http://demo.woothemes.com/woocommerce/wp-content/uploads/sites/56/2013/06/T_3_back.jpg",
-                "position": 3
-            }
-        ],
+        "name": name, "type": "variable", "description": name, "short_description": name,
         "attributes": [
             {
-                "id": 6,
-                "position": 0,
-                "visible": False,
-                "variation": True,
-                "options": [
-                    "Black",
-                    "Green"
-                ]
-            },
-            {
-                "name": "Size",
-                "position": 0,
-                "visible": True,
-                "variation": True,
-                "options": [
-                    "S",
-                    "M"
-                ]
+                "position": 0, "visible": True, "variation": True,
+                "options": options
             }
         ],
         "default_attributes": [
             {
-                "id": 6,
-                "option": "Black"
-            },
-            {
                 "name": "Size",
-                "option": "S"
+                "option": options[0]
             }
         ],
-        "variations": [
-            {
-                "regular_price": "19.99",
-                "image": [
-                    {
-                        "src": "http://demo.woothemes.com/woocommerce/wp-content/uploads/sites/56/2013/06/T_4_front.jpg",
-                        "position": 0
-                    }
-                ],
-                "attributes": [
-                    {
-                        "id": 6,
-                        "option": "black"
-                    },
-                    {
-                        "name": "Size",
-                        "option": "S"
-                    }
-                ]
-            },
-            {
-                "regular_price": "19.99",
-                "image": [
-                    {
-                        "src": "http://demo.woothemes.com/woocommerce/wp-content/uploads/sites/56/2013/06/T_3_front.jpg",
-                        "position": 0
-                    }
-                ],
-                "attributes": [
-                    {
-                        "id": 6,
-                        "option": "green"
-                    },
-                    {
-                        "name": "Size",
-                        "option": "M"
-                    }
-                ]
-            }
-        ]}
-        pprint(self.wcapi.post("products", data).json())
+        "variations": variations
+        }
+        self._wcapi.post("products", data)
 
     # Read functions
     
     #Reads product list stored in WP site and populates local product info cache containers
     def populateProducts(self):
-        self.set_allProductInfo(self.wcapi.get("products"))
+        self.set_allProductInfo(self._wcapi.get("products"))
         
         for pInfo in self.AllProductInfoList:
                 self.ProductNameIdDict[pInfo.name] = pInfo.id
@@ -179,12 +77,12 @@ class WordPressController:
         return self.get_allProductInfo()
         
     def printAllProducts(self):
-        productsJson = self.wcapi.get("products").json()
+        productsJson = self._wcapi.get("products").json()
         pprint(productsJson)
         return pformat(productsJson)
 
     def getAllProducts(self):
-        return self.wcapi.get("products")
+        return self._wcapi.get("products")
         
     def getProductIdByName(self):
         pass
@@ -196,19 +94,24 @@ class WordPressController:
             "regular_price": price,
             "name" : name,
             "categories": [
-                {
-                  "id": catId,
-                  "name": category,
-                  "slug": catslug
-                }]
+                { "id": catId, "name": category, "slug": catslug }]
         }
-        pprint(self.wcapi.put(''.join(["products/", productId], data).json()))
+        pprint(self._wcapi.put(''.join(["products/", productId], data).json()))
     
     # Delete functions
     
     def deleteProduct(self, productId):
-        return self.wcapi.delete(''.join(["products/" ,productId ,"?force=true"]).json())
+        out = self._wcapi.delete(''.join(["products/" , productId , "?force=true"]))
+        return out.ok
         
-    def deleteAllProducts(self):
-        for product in self.getAllProducts():
-            self.deleteProduct(product.id)
+    def deleteProducts(self, productList):
+        out = "Deleting products.\n"
+
+        for product in productList:
+            pid = str(product['id'])
+            if self.deleteProduct(pid):
+                out += pid + " deleted.\n"
+            else:
+                out += "warning: error deleting " + pid + ".\n"
+
+        return out

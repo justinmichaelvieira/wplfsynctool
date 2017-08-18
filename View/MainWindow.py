@@ -1,6 +1,9 @@
-from PyQt5.QtWidgets import *
-from qt.mainwindow_auto import Ui_MainWindow
 import yaml
+from PyQt5.QtWidgets import *
+from pprint import pprint, pformat
+
+from View.mainwindow_auto import Ui_MainWindow
+
 
 class MainWindow(QDialog, Ui_MainWindow):
     def __init__(self, config, scraper, api):
@@ -8,7 +11,7 @@ class MainWindow(QDialog, Ui_MainWindow):
         self.setupUi(self)
         self._config = config
         self._scraper = scraper
-        self._api = api
+        self._wcController = api
         self.pushButton.clicked.connect(self.performSync)
         self.editSettingsBtn.clicked.connect(self.editContent)
         self.saveSettingsBtn.clicked.connect(self.saveContent)
@@ -45,14 +48,20 @@ class MainWindow(QDialog, Ui_MainWindow):
         self.secretKeyEdit.setText(self._config['consumer_secret'])
 
     def performSync(self):
-        if(self._api.wcapi == None):
-            self._api.initWcapi()
-        self._scraper.scrapeProductData()
-        allProductsJSON = self._api.printAllProducts()
-        self.onOutputChanged(allProductsJSON)
+        if(self._wcController._wcapi == None):
+            self._wcController.initWcapi()
+        leaflyProducts = self._scraper.scrapeProductData()
+        wcProducts = self._wcController.getAllProducts().json()
+        pprint(wcProducts)
+        #self.onOutputChanged(pformat(wcProducts))
+        self._wcController.deleteProducts(wcProducts)
+        for prodName in leaflyProducts:
+            prodInfo = leaflyProducts[prodName]
+            # create if not exists, otherwise update
+            self._wcController.createVariableProduct(prodName, prodInfo)
 
     def setCentralWidget(self, nullArg):
         pass
 
-    def onOutputChanged(self, allProductsJSON):
-        self.outputText.appendPlainText(allProductsJSON)
+    def onOutputChanged(self, allProducts):
+        self.outputText.appendPlainText(allProducts)
